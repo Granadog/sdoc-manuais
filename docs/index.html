@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Central de Manuais — sDoc</title>
+  <style>
+  :root {
+    --primary: #1a56c4;
+    --primary-dark: #0d2d73;
+    --primary-light: #e8f0fd;
+    --accent: #2e7cf6;
+    --text: #1a1a2e;
+    --text-muted: #5a6585;
+    --border: #dde3ef;
+    --bg: #f7f9ff;
+    --white: #ffffff;
+    --step-bg: #f0f5ff;
+    --obs-bg: #fff8e1;
+    --obs-border: #f59e0b;
+    --success: #059669;
+    --shadow: 0 2px 12px rgba(26,86,196,.10);
+    --shadow-md: 0 4px 24px rgba(26,86,196,.15);
+    --radius: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text);
+    background: var(--bg);
+  }
+
+  /* ---- TOP BAR ---- */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--primary-dark);
+    color: #fff;
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 24px;
+    height: 52px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  }
+  .topbar-logo { font-weight: 700; font-size: 1.15rem; letter-spacing: -.5px; color: #fff; text-decoration: none; }
+  .topbar-logo span { color: #7eb8ff; }
+  .topbar-sep { color: #7eb8ff; font-size: .85rem; }
+  .topbar-title { font-size: .9rem; color: #cddeff; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar-back {
+    margin-left: auto;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    color: #fff;
+    font-size: .8rem;
+    padding: 5px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background .15s;
+  }
+  .topbar-back:hover { background: rgba(255,255,255,.22); }
+
+  /* ---- LAYOUT ---- */
+  .layout { display: flex; min-height: calc(100vh - 52px); }
+
+  /* ---- SIDEBAR ---- */
+  .sidebar {
+    width: 260px; flex-shrink: 0;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: sticky; top: 52px;
+    height: calc(100vh - 52px);
+    overflow-y: auto;
+  }
+  .sidebar-heading {
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 0 20px 10px;
+  }
+  .sidebar ul { list-style: none; }
+  .sidebar ul li a {
+    display: block;
+    padding: 7px 20px 7px 24px;
+    font-size: .85rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    transition: all .15s;
+    line-height: 1.4;
+  }
+  .sidebar ul li a:hover { color: var(--primary); background: var(--primary-light); }
+  .sidebar ul li a.active { color: var(--primary); border-left-color: var(--primary); background: var(--primary-light); font-weight: 600; }
+  .sidebar-divider { margin: 12px 20px; border: none; border-top: 1px solid var(--border); }
+
+  /* ---- MAIN CONTENT ---- */
+  .main { flex: 1; min-width: 0; }
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 36px 80px;
+  }
+
+  /* ---- MANUAL HEADER ---- */
+  .manual-header { margin-bottom: 32px; }
+  .manual-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+  .manual-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    line-height: 1.25;
+    margin-bottom: 6px;
+  }
+  .manual-subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  /* ---- VERSION TABLE ---- */
+  .version-table {
+    display: flex; gap: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 28px;
+    background: var(--white);
+  }
+  .version-cell {
+    flex: 1;
+    padding: 12px 16px;
+    border-right: 1px solid var(--border);
+  }
+  .version-cell:last-child { border-right: none; }
+  .version-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-muted); margin-bottom: 3px; }
+  .version-value { font-size: .95rem; font-weight: 600; color: var(--text); }
+
+  /* ---- INTRO ---- */
+  .intro {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 16px 20px;
+    color: var(--text);
+    margin-bottom: 36px;
+    font-size: .95rem;
+  }
+
+  /* ---- SECTION HEADING ---- */
+  .section-heading {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin: 36px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+    scroll-margin-top: 70px;
+  }
+
+  /* ---- STEP BLOCK ---- */
+  .step {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+    overflow: hidden;
+    scroll-margin-top: 70px;
+  }
+  .step-header {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--step-bg);
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .step-num {
+    width: 30px; height: 30px; flex-shrink: 0;
+    background: var(--primary);
+    color: #fff;
+    font-size: .8rem;
+    font-weight: 700;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step-title { font-size: 1rem; font-weight: 600; color: var(--primary-dark); line-height: 1.3; }
+  .step-body { padding: 18px 20px; }
+  .step-body p { margin-bottom: 12px; }
+  .step-body p:last-child { margin-bottom: 0; }
+  .step-body strong { color: var(--primary-dark); }
+
+  /* ---- FIGURES ---- */
+  figure {
+    margin: 18px 0;
+    text-align: center;
+  }
+  figure img {
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+  figcaption {
+    margin-top: 7px;
+    font-size: .8rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* ---- OBS BOX ---- */
+  .obs-box {
+    background: var(--obs-bg);
+    border: 1px solid var(--obs-border);
+    border-left: 4px solid var(--obs-border);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 12px 16px;
+    font-size: .9rem;
+    margin: 14px 0;
+  }
+  .obs-box strong { color: #92400e; }
+
+  /* ---- SUPPORT SECTION ---- */
+  .support-section {
+    margin-top: 48px;
+    padding-top: 28px;
+    border-top: 2px solid var(--border);
+  }
+  .support-title { font-size: 1rem; font-weight: 700; color: var(--text-muted); margin-bottom: 16px; text-transform: uppercase; letter-spacing: .06em; font-size: .8rem; }
+  .support-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .support-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+  .support-card h4 { font-size: .9rem; color: var(--primary-dark); margin-bottom: 10px; }
+  .support-card p { font-size: .85rem; color: var(--text-muted); margin-bottom: 6px; line-height: 1.5; }
+
+  /* ---- BODY CONTENT (outside steps) ---- */
+  .body-content p { margin-bottom: 12px; font-size: .95rem; }
+  .body-content strong { color: var(--primary-dark); }
+  .body-content em { color: var(--text-muted); }
+  .body-content ul, .body-content ol { margin: 8px 0 12px 24px; }
+  .body-content li { margin-bottom: 4px; font-size: .95rem; }
+
+  /* ---- NUMBERED LIST ITEMS ---- */
+  .numbered-item { display: flex; gap: 10px; margin-bottom: 10px; }
+  .numbered-item-num { font-weight: 700; color: var(--primary); min-width: 20px; }
+
+  /* ---- PREV/NEXT NAV ---- */
+  .page-nav {
+    display: flex; gap: 12px; justify-content: space-between;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .page-nav a {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--primary);
+    font-size: .85rem;
+    font-weight: 600;
+    background: var(--white);
+    transition: all .15s;
+    max-width: 48%;
+  }
+  .page-nav a:hover { background: var(--primary-light); border-color: var(--primary); }
+  .page-nav .next { margin-left: auto; flex-direction: row-reverse; }
+  .page-nav .prev-label, .page-nav .next-label { font-size: .75rem; font-weight: 400; color: var(--text-muted); display: block; }
+
+  /* ---- INDEX STYLES ---- */
+  .index-hero {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    color: #fff;
+    padding: 56px 40px;
+    text-align: center;
+  }
+  .index-hero h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; }
+  .index-hero p { font-size: 1.05rem; opacity: .85; max-width: 600px; margin: 0 auto; }
+  .index-body { max-width: 1080px; margin: 0 auto; padding: 48px 24px 80px; }
+  .index-section-title { font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: 20px; }
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+    transition: all .18s;
+    box-shadow: var(--shadow);
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--primary); }
+  .card-top { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .card-icon { font-size: 1.7rem; width: 44px; text-align: center; }
+  .card-num { font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--primary); background: var(--primary-light); padding: 3px 9px; border-radius: 12px; }
+  .card-title { font-size: 1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 6px; line-height: 1.3; }
+  .card-subtitle { font-size: .83rem; color: var(--text-muted); line-height: 1.45; }
+  .card-arrow { margin-top: 16px; font-size: .8rem; color: var(--primary); font-weight: 600; }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .content { padding: 24px 16px 60px; }
+    .manual-title { font-size: 1.4rem; }
+    .version-table { flex-direction: column; }
+    .version-cell { border-right: none; border-bottom: 1px solid var(--border); }
+    .version-cell:last-child { border-bottom: none; }
+    .page-nav { flex-direction: column; }
+    .page-nav a { max-width: 100%; }
+    .index-hero { padding: 36px 20px; }
+    .index-hero h1 { font-size: 1.6rem; }
+    .index-body { padding: 28px 16px 60px; }
+  }
+</style>
+  
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="topbar-logo">s<span>Doc</span></a>
+  <span class="topbar-sep">/</span>
+  <span class="topbar-title">Central de Manuais</span>
+</div>
+<div class="index-hero">
+  <h1>Central de Manuais sDoc</h1>
+  <p>Documentação completa da plataforma de assinaturas digitais. Acesse o guia do módulo que você precisa.</p>
+</div>
+<div class="index-body">
+  <div class="index-section-title">Manuais disponíveis</div>
+  <div class="cards-grid">
+    
+<a href="manual-01-cadastro-de-usuario.html" class="card">
+  <div class="card-top">
+    <div class="card-icon">👤</div>
+    <div class="card-num">Manual 01</div>
+  </div>
+  <div class="card-title">Cadastro no sDoc – Novo Usuário</div>
+  <div class="card-subtitle">Como criar sua conta pessoal no portal</div>
+  <div class="card-arrow">Ver manual →</div>
+</a>
+<a href="manual-02-login-no-sdoc.html" class="card">
+  <div class="card-top">
+    <div class="card-icon">🔑</div>
+    <div class="card-num">Manual 02</div>
+  </div>
+  <div class="card-title">Como fazer Login no sDoc</div>
+  <div class="card-subtitle">Acesse sua conta via e-mail, senha ou Certificado Digital</div>
+  <div class="card-arrow">Ver manual →</div>
+</a>
+<a href="manual-03-cadastro-de-conta-empresa.html" class="card">
+  <div class="card-top">
+    <div class="card-icon">🏢</div>
+    <div class="card-num">Manual 03</div>
+  </div>
+  <div class="card-title">Cadastro de Conta Empresa (CNPJ)</div>
+  <div class="card-subtitle">Como vincular uma conta empresarial à sua conta pessoal no sDoc</div>
+  <div class="card-arrow">Ver manual →</div>
+</a>
+<a href="manual-04-explorando-o-portal.html" class="card">
+  <div class="card-top">
+    <div class="card-icon">🗺️</div>
+    <div class="card-num">Manual 04</div>
+  </div>
+  <div class="card-title">Explorando o Portal sDoc</div>
+  <div class="card-subtitle">Conheça os principais recursos e menus da plataforma</div>
+  <div class="card-arrow">Ver manual →</div>
+</a>
+<a href="manual-05-cadastro-e-gestao-de-membros.html" class="card">
+  <div class="card-top">
+    <div class="card-icon">👥</div>
+    <div class="card-num">Manual 05</div>
+  </div>
+  <div class="card-title">Como Adicionar e Gerenciar Membros</div>
+  <div class="card-subtitle">Adicione colaboradores e gerencie permissões na sua conta sDoc</div>
+  <div class="card-arrow">Ver manual →</div>
+</a>
+<a href="manual-06-configuracoes.html" class="card">
+  <div class="card-top">
+    <div class="card-icon">⚙️</div>
+    <div class="card-num">Manual 06</div>
+  </div>
+  <div class="card-title">Configurações do Portal sDoc</div>
+  <div class="card-subtitle">Conheça as principais opções de personalização da plataforma</div>
+  <div class="card-arrow">Ver manual →</div>
+</a>
+<a href="manual-07-criar-solicitacao.html" class="card">
+  <div class="card-top">
+    <div class="card-icon">📄</div>
+    <div class="card-num">Manual 07</div>
+  </div>
+  <div class="card-title">Como Criar uma Solicitação de Assinaturas</div>
+  <div class="card-subtitle">Primeiros passos no sDoc – guia completo para envio de documentos</div>
+  <div class="card-arrow">Ver manual →</div>
+</a>
+<a href="manual-08-integracao-api.html" class="card">
+  <div class="card-top">
+    <div class="card-icon">🔗</div>
+    <div class="card-num">Manual 08</div>
+  </div>
+  <div class="card-title">Integração API sDoc</div>
+  <div class="card-subtitle">Como integrar sua aplicação com a API de assinaturas do sDoc</div>
+  <div class="card-arrow">Ver manual →</div>
+</a>
+<a href="manual-09-posicionamento-automatico.html" class="card">
+  <div class="card-top">
+    <div class="card-icon">🤖</div>
+    <div class="card-num">Manual 09</div>
+  </div>
+  <div class="card-title">Posicionamento Automático de Assinaturas</div>
+  <div class="card-subtitle">Como usar palavras-chave para posicionar selos automaticamente no sDoc</div>
+  <div class="card-arrow">Ver manual →</div>
+</a>
+  </div>
+</div>
+</body>
+</html>
